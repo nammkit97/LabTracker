@@ -19,7 +19,10 @@ patientForm.addEventListener('submit', function (e) {
     ftpDate: document.getElementById('ftpDate').value,
     insertDate: document.getElementById('insertDate').value,
     offboarding: document.getElementById('offboarding').value,
-    labStatus: 'not needed', // Default value
+    labStatusPrep: 'not needed',  // Default value
+    labStatusFtp: 'not needed',   // Default value
+    labStatusInsert: 'not needed', // Default value
+    labStatusOffboarding: 'not needed', // Default value
     notes: document.getElementById('notes').value
   };
 
@@ -49,14 +52,39 @@ function addPatientToTable(patient, index = null) {
     <td>${patient.generalTx}</td>
     <td>${patient.status}</td>
     <td contenteditable="true" class="editable" data-column="prepDate">${patient.prepDate}</td>
+    <td>
+      <select class="lab-status-dropdown" data-column="labStatusPrep">
+        <option value="lab followed up" ${patient.labStatusPrep === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
+        <option value="lab back" ${patient.labStatusPrep === "lab back" ? "selected" : ""}>Lab Back</option>
+        <option value="awaiting lab" ${patient.labStatusPrep === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
+        <option value="not needed" ${patient.labStatusPrep === "not needed" ? "selected" : ""}>Not Needed</option>
+      </select>
+    </td>
     <td contenteditable="true" class="editable" data-column="ftpDate">${patient.ftpDate}</td>
+    <td>
+      <select class="lab-status-dropdown" data-column="labStatusFtp">
+        <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
+        <option value="lab back" ${patient.labStatusFtp === "lab back" ? "selected" : ""}>Lab Back</option>
+        <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
+        <option value="not needed" ${patient.labStatusFtp === "not needed" ? "selected" : ""}>Not Needed</option>
+      </select>
+    </td>
     <td contenteditable="true" class="editable" data-column="insertDate">${patient.insertDate}</td>
+    <td>
+      <select class="lab-status-dropdown" data-column="labStatusInsert">
+        <option value="lab followed up" ${patient.labStatusInsert === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
+        <option value="lab back" ${patient.labStatusInsert === "lab back" ? "selected" : ""}>Lab Back</option>
+        <option value="awaiting lab" ${patient.labStatusInsert === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
+        <option value="not needed" ${patient.labStatusInsert === "not needed" ? "selected" : ""}>Not Needed</option>
+      </select>
+    </td>
     <td contenteditable="true" class="editable" data-column="offboarding">${patient.offboarding}</td>
     <td>
-      <select class="lab-status-dropdown" data-column="labStatus">
-        <option value="not needed" ${patient.labStatus === "not needed" ? "selected" : ""}>Not Needed</option>
-        <option value="lab followed up" ${patient.labStatus === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
-        <option value="lab back" ${patient.labStatus === "lab back" ? "selected" : ""}>Lab Back</option>
+      <select class="lab-status-dropdown" data-column="labStatusOffboarding">
+        <option value="lab followed up" ${patient.labStatusOffboarding === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
+        <option value="lab back" ${patient.labStatusOffboarding === "lab back" ? "selected" : ""}>Lab Back</option>
+        <option value="awaiting lab" ${patient.labStatusOffboarding === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
+        <option value="not needed" ${patient.labStatusOffboarding === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
     <td>${patient.notes}</td>
@@ -69,43 +97,19 @@ function addPatientToTable(patient, index = null) {
 }
 
 // Function to delete a patient
-function deletePatient(index, button) {
-  const row = button.parentElement.parentElement;
-
-  // Remove patient from local storage
+function deletePatient(index, btn) {
   let patients = JSON.parse(localStorage.getItem('patients')) || [];
   patients.splice(index, 1);
   localStorage.setItem('patients', JSON.stringify(patients));
-
-  // Remove row from the table
-  row.remove();
+  btn.closest('tr').remove(); // Remove the row from the table
 }
 
-// Function to edit a patient
+// Function to edit a patient (not yet implemented)
 function editPatient(index) {
-  let patients = JSON.parse(localStorage.getItem('patients')) || [];
-  const patient = patients[index];
+  alert('Edit function not yet implemented!');
+}
 
-  // Select the row that contains the patient's data
-  const row = patientTableBody.rows[index];
-  
-  // Get the updated values from the editable fields
-  const prepDate = row.querySelector('[data-column="prepDate"]').textContent.trim();
-  const ftpDate = row.querySelector('[data-column="ftpDate"]').textContent.trim();
-  const insertDate = row.querySelector('[data-column="insertDate"]').textContent.trim();
-  const offboarding = row.querySelector('[data-column="offboarding"]').textContent.trim();
-  const labStatus = row.querySelector('.lab-status-dropdown').value;
-
-  // Update the patient object
-  patient.prepDate = prepDate;
-  patient.ftpDate = ftpDate;
-  patient.insertDate = insertDate;
-  patient.offboarding = offboarding;
-  patient.labStatus = labStatus;
-
-  // Save updated patient data back to local storage
-  patients[index] = patient;
-  localStorage.setItem('patients', JSON.stringify(patients));
-
-  alert('Patient details updated successfully!');
+// Function to open a date picker
+function openCalendar(inputId) {
+  document.getElementById(inputId).click();
 }
