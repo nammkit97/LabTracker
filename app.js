@@ -5,7 +5,6 @@ const notesPopup = document.getElementById('notesPopup');
 const editNotesText = document.getElementById('editNotesText');
 const saveNotesBtn = document.getElementById('saveNotesBtn');
 const discardNotesBtn = document.getElementById('discardNotesBtn');
-const closePopupBtn = document.getElementById('closePopupBtn');
 let currentEditIndex = null;
 
 // Load patients from local storage on page load
@@ -108,19 +107,27 @@ function addPatientToTable(patient, index = null) {
         </td>
         <td>
             <span class="note-display" onclick="openNotesPopup(${index})">
-                ${patient.notes.length > 20 ? patient.notes.substring(0, 20) + '...' : patient.notes}
+                ${patient.notes.length > 10 ? patient.notes.substring(0, 10) + '...' : patient.notes}
             </span>
         </td>
         <td class="actions">
-            <button onclick="deletePatient(${index}, this)">Delete</button>
+            <button onclick="confirmDelete(${index}, this)">Delete</button>
         </td>
     `;
     patientTableBody.appendChild(row);
 }
 
+// Function to confirm deletion of a patient
+function confirmDelete(index, btn) {
+    const confirmation = confirm("Are you sure you want to delete this patient?");
+    if (confirmation) {
+        deletePatient(index, btn);
+    }
+}
+
 // Function to delete a patient
-function deletePatient(index, btn) {
-    let patients = JSON.parse(localStorage.getItem('patients'));
+function deletePatient(index) {
+    const patients = JSON.parse(localStorage.getItem('patients'));
     patients.splice(index, 1); // Remove patient from array
     localStorage.setItem('patients', JSON.stringify(patients)); // Update local storage
     loadPatients(); // Reload patients to reflect changes
@@ -159,10 +166,5 @@ saveNotesBtn.addEventListener('click', function() {
 
 // Function to discard changes and close the popup
 discardNotesBtn.addEventListener('click', function() {
-    notesPopup.style.display = 'none'; // Just close the popup
-});
-
-// Function to close the popup
-closePopupBtn.addEventListener('click', function() {
     notesPopup.style.display = 'none'; // Just close the popup
 });
