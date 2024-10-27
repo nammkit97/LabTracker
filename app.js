@@ -82,7 +82,6 @@ function addPatient() {
         prepDate: '',
         labStatusPrep: 'awaiting lab',
         ftpDate: '',
-        labStatusFtp: 'awaiting lab',
         insertDate: '',
         labStatusInsert: 'awaiting lab',
         offboardingDate: '',
@@ -137,20 +136,15 @@ function applyLabStatusColors(row, patient) {
         row.cells[2].classList.remove('red', 'yellow', 'green');
     }
 
-    // FTP Lab Status
-    if (patient.labStatusFtp === "awaiting lab" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
-        row.cells[4].classList.add('red');
-    } else if (patient.labStatusFtp === "lab followed up" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('ftpLabBackWarning').value)) {
-        row.cells[4].classList.add('yellow'); // Yellow for 1 day before red
-    } else if (patient.labStatusFtp === "lab back") {
-        row.cells[4].classList.add('green');
-    } else {
-        row.cells[4].classList.remove('red', 'yellow', 'green');
-    }
-
     // Insert Lab Status
     if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
         row.cells[6].classList.add('red');
+    } else if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)+1) {
+        row.cells[6].classList.add('red');
+    } else if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabBackUpWarning').value)) {
+        row.cells[6].classList.add('red');
+    } else if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabBackUpWarning').value)+1) {
+        row.cells[6].classList.add('yellow');
     } else if (patient.labStatusInsert === "lab back") {
         row.cells[6].classList.add('green');
     } else {
@@ -160,6 +154,12 @@ function applyLabStatusColors(row, patient) {
     // Offboarding Lab Status
     if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabFollowUpWarning').value)) {
         row.cells[8].classList.add('red');
+    }else if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabFollowUpWarning').value)+1) {
+        row.cells[8].classList.add('yellow');
+    }else if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabBackWarning').value)) {
+        row.cells[8].classList.add('red');
+    }else if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabBackWarning').value)+1) {
+        row.cells[8].classList.add('yellow');
     } else if (patient.labStatusOffboarding === "lab back") {
         row.cells[8].classList.add('green');
     } else {
