@@ -26,8 +26,8 @@ patientForm.addEventListener('submit', function (e) {
         insertDate: '',
         offboarding: '',
         labStatusPrep: 'awaiting lab',  // Default value
-        labStatusFtp: 'awaiting lab',   // Default value
-        labStatusInsert: 'awaiting lab', // Default value
+        labStatusFtp: 'awaiting lab',    // Default value
+        labStatusInsert: 'awaiting lab',  // Default value
         labStatusOffboarding: 'awaiting lab', // Default value
         notes: document.getElementById('notes').value
     };
@@ -52,7 +52,7 @@ function loadPatients() {
 // Function to add a patient to the table
 function addPatientToTable(patient, index = null) {
     const row = document.createElement('tr');
-    
+
     row.innerHTML = `
         <td>${patient.name}</td>
         <td>${patient.case}</td>
@@ -62,7 +62,7 @@ function addPatientToTable(patient, index = null) {
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
         </td>
         <td>
-            <select class="lab-status-dropdown" data-column="labStatusPrep">
+            <select class="lab-status-dropdown" data-column="labStatusPrep" onchange="updateLabStatus(this, ${index})">
                 <option value="awaiting lab" ${patient.labStatusPrep === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
                 <option value="lab followed up" ${patient.labStatusPrep === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
                 <option value="lab back" ${patient.labStatusPrep === "lab back" ? "selected" : ""}>Lab Back</option>
@@ -75,7 +75,7 @@ function addPatientToTable(patient, index = null) {
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
         </td>
         <td>
-            <select class="lab-status-dropdown" data-column="labStatusFtp">
+            <select class="lab-status-dropdown" data-column="labStatusFtp" onchange="updateLabStatus(this, ${index})">
                 <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
                 <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
                 <option value="lab back" ${patient.labStatusFtp === "lab back" ? "selected" : ""}>Lab Back</option>
@@ -88,7 +88,7 @@ function addPatientToTable(patient, index = null) {
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
         </td>
         <td>
-            <select class="lab-status-dropdown" data-column="labStatusInsert">
+            <select class="lab-status-dropdown" data-column="labStatusInsert" onchange="updateLabStatus(this, ${index})">
                 <option value="awaiting lab" ${patient.labStatusInsert === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
                 <option value="lab followed up" ${patient.labStatusInsert === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
                 <option value="lab back" ${patient.labStatusInsert === "lab back" ? "selected" : ""}>Lab Back</option>
@@ -101,33 +101,38 @@ function addPatientToTable(patient, index = null) {
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
         </td>
         <td>
-            <select class="lab-status-dropdown" data-column="labStatusOffboarding">
+            <select class="lab-status-dropdown" data-column="labStatusOffboarding" onchange="updateLabStatus(this, ${index})">
                 <option value="awaiting lab" ${patient.labStatusOffboarding === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
                 <option value="lab followed up" ${patient.labStatusOffboarding === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
                 <option value="lab back" ${patient.labStatusOffboarding === "lab back" ? "selected" : ""}>Lab Back</option>
                 <option value="not needed" ${patient.labStatusOffboarding === "not needed" ? "selected" : ""}>Not Needed</option>
             </select>
         </td>
-        <td>
-            <span class="notes-display" onclick="openNotesPopup(${index})">
-                ${patient.notes.length > 10 ? patient.notes.substring(0, 10) + '...' : patient.notes}
-            </span>
+        <td class="notes-display" onclick="openNotesPopup(${index})">
+            ${patient.notes.length > 10 ? patient.notes.slice(0, 10) + '...' : patient.notes}
         </td>
-        <td class="actions">
-            <button type="button" onclick="confirmDelete(${index}, this)">Delete</button>
+        <td>
+            <button onclick="confirmDelete(${index}, this)">Delete</button>
         </td>
     `;
-    
+
     patientTableBody.appendChild(row);
-    
-    // Check warnings
+
+    // Call the function to check for warnings
     checkWarnings(patient, index);
 }
 
-// Function to check warnings based on dates
+// Function to update lab status
+function updateLabStatus(select, index) {
+    const patients = JSON.parse(localStorage.getItem('patients'));
+    patients[index][select.dataset.column] = select.value; // Update the appropriate lab status
+    localStorage.setItem('patients', JSON.stringify(patients)); // Save changes
+}
+
+// Function to check warnings and apply styles
 function checkWarnings(patient, index) {
     const today = new Date();
-    
+
     // Check Prep Lab Follow Up Warning
     if (patient.labStatusPrep === 'lab followed up' && patient.prepDate) {
         const prepDate = new Date(patient.prepDate);
@@ -138,9 +143,9 @@ function checkWarnings(patient, index) {
     }
 
     // Check Prep Lab Back Warning
-    if (patient.labStatusPrep === 'lab back' && patient.ftpDate) {
-        const ftpDate = new Date(patient.ftpDate);
-        const daysDiff = Math.floor((today - ftpDate) / (1000 * 60 * 60 * 24));
+    if (patient.labStatusPrep === 'lab back' && patient.prepDate) {
+        const prepDate = new Date(patient.prepDate);
+        const daysDiff = Math.floor((today - prepDate) / (1000 * 60 * 60 * 24));
         if (daysDiff >= 2) {
             alert("Warning: Prep Lab Back is overdue by " + daysDiff + " days.");
         }
@@ -256,34 +261,34 @@ function confirmDelete(index, button) {
     }
 }
 
-// Function to open notes popup
+// Function to open notes popup for editing
 function openNotesPopup(index) {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    currentEditIndex = index; // Store the index for editing
-    editNotesText.value = patients[index].notes; // Set textarea to current notes
-    notesPopup.style.display = 'block'; // Show the popup
+    currentEditIndex = index; // Store index for editing
+    editNotesText.value = patients[index].notes; // Load current notes into the textarea
+    notesPopup.style.display = 'flex'; // Show the popup
 }
 
-// Function to save edited notes
-saveNotesBtn.addEventListener('click', function() {
+// Save edited notes
+saveNotesBtn.addEventListener('click', function () {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    patients[currentEditIndex].notes = editNotesText.value; // Update notes with new text
+    patients[currentEditIndex].notes = editNotesText.value; // Update notes
     localStorage.setItem('patients', JSON.stringify(patients)); // Save changes
     loadPatients(); // Reload patients to reflect changes
     notesPopup.style.display = 'none'; // Close the popup
 });
 
-// Function to discard changes and close the popup
-discardNotesBtn.addEventListener('click', function() {
-    notesPopup.style.display = 'none'; // Just close the popup
+// Discard edited notes
+discardNotesBtn.addEventListener('click', function () {
+    notesPopup.style.display = 'none'; // Close the popup
 });
 
 // Open settings popup
-settingsBtn.addEventListener('click', function() {
-    settingsPopup.style.display = 'block'; // Show the settings popup
+settingsBtn.addEventListener('click', function () {
+    settingsPopup.style.display = 'flex'; // Show the settings popup
 });
 
 // Close settings popup
-closeSettingsBtn.addEventListener('click', function() {
-    settingsPopup.style.display = 'none'; // Close the settings popup
+closeSettingsBtn.addEventListener('click', function () {
+    settingsPopup.style.display = 'none'; // Hide the settings popup
 });
