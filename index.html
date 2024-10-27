@@ -1,43 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Progress Tracker</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Progress Tracker</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Patient Progress Tracker</h1>
 
-  <form id="patientForm">
+<h1>Patient Progress Tracker</h1>
+
+<form id="patientForm">
     <input type="text" id="patientName" placeholder="Patient Name" required>
     <input type="text" id="case" placeholder="Case" required>
-    <input type="text" id="generalTx" placeholder="General Treatment" required>
-    <textarea id="notes" placeholder="Notes"></textarea>
+    <input type="text" id="notes" placeholder="Notes" required>
     <button type="submit">Add Patient</button>
-  </form>
+</form>
 
-  <table>
+<table>
     <thead>
-      <tr>
-        <th>Patient Name</th>
-        <th>Case</th>
-        <th>General Tx</th>
-        <th>Prep Date</th>
-        <th>Lab Status (Prep)</th>
-        <th>FTP Date</th>
-        <th>Lab Status (FTP)</th>
-        <th>Insert Date</th>
-        <th>Lab Status (Insert)</th>
-        <th>Offboarding Date</th>
-        <th>Lab Status (Offboarding)</th>
-        <th>Notes</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+            <th>Patient Name</th>
+            <th>Case</th>
+            <th>Prep Date</th>
+            <th>Lab Status</th>
+            <th>FTP Date</th>
+            <th>Lab Status</th>
+            <th>Insert Date</th>
+            <th>Lab Status</th>
+            <th>Offboarding Date</th>
+            <th>Lab Status</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody id="patientTableBody"></tbody>
-  </table>
+</table>
 
-  <script src="app.js"></script>
+<div id="notesPopup" class="popup">
+    <div class="popup-content">
+        <h2>Edit Notes</h2>
+        <textarea id="editNotesText" rows="5"></textarea>
+        <button id="saveNotesBtn">Save</button>
+        <button id="discardNotesBtn">Discard</button>
+        <button id="closePopupBtn">Close</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
