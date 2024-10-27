@@ -10,6 +10,8 @@
 
 <h1>Patient Progress Tracker</h1>
 
+<button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+
 <form id="patientForm">
     <input type="text" id="patientName" placeholder="Patient Name" required>
     <input type="text" id="case" placeholder="Case" required>
@@ -25,6 +27,7 @@
             <th>Prep Date</th>
             <th>Lab Status</th>
             <th>FTP Date</th>
+            <th>Lab Status</th>
             <th>Insert Date</th>
             <th>Lab Status</th>
             <th>Offboarding Date</th>
@@ -42,6 +45,19 @@
         <textarea id="editNotesText" rows="5"></textarea>
         <button id="saveNotesBtn">Save</button>
         <button id="discardNotesBtn">Discard</button>
+    </div>
+</div>
+
+<div id="settingsPopup" class="popup">
+    <div class="popup-content">
+        <h2>Settings</h2>
+        <p>Prep Lab Follow Up Warning: <span id="prepWarningFollowUp">4 days</span></p>
+        <p>Prep Lab Back Warning: <span id="prepWarningBack">2 days</span></p>
+        <p>Insert Lab Follow Up Warning: <span id="insertWarningFollowUp">7 days</span></p>
+        <p>Insert Lab Back Warning: <span id="insertWarningBack">2 days</span></p>
+        <p>Offboarding Lab Follow Up Warning: <span id="offboardingWarningFollowUp">4 days</span></p>
+        <p>Offboarding Lab Back Warning: <span id="offboardingWarningBack">2 days</span></p>
+        <button id="closeSettingsBtn">Close</button>
     </div>
 </div>
 
