@@ -141,7 +141,7 @@ function applyLabStatusColors(row, patient) {
     if (patient.labStatusFtp === "awaiting lab" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
         row.cells[4].classList.add('red');
     } else if (patient.labStatusFtp === "lab followed up" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('ftpLabBackWarning').value)) {
-        row.cells[4].classList.add('yellow'); // Yellow for 1 day before red
+        row.cells[4].classList.add('red');
     } else if (patient.labStatusFtp === "lab back") {
         row.cells[4].classList.add('green');
     } else {
