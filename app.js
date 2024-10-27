@@ -41,14 +41,6 @@ function loadPatients() {
                 <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
             </td>
             <td>
-                <select class="lab-status-dropdown" data-column="labStatusFtp" onchange="updateLabStatus(this, ${index})">
-                    <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
-                    <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
-                    <option value="lab back" ${patient.labStatusFtp === "lab back" ? "selected" : ""}>Lab Back</option>
-                    <option value="not needed" ${patient.labStatusFtp === "not needed" ? "selected" : ""}>Not Needed</option>
-                </select>
-            </td>
-            <td>
                 <span class="date-display" data-column="insertDate">${patient.insertDate || 'Not Set'}</span>
                 <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'insertDate')">
                 <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
@@ -65,14 +57,6 @@ function loadPatients() {
                 <span class="date-display" data-column="offboardingDate">${patient.offboardingDate || 'Not Set'}</span>
                 <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'offboardingDate')">
                 <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
-            </td>
-            <td>
-                <select class="lab-status-dropdown" data-column="labStatusOffboarding" onchange="updateLabStatus(this, ${index})">
-                    <option value="awaiting lab" ${patient.labStatusOffboarding === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
-                    <option value="lab followed up" ${patient.labStatusOffboarding === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
-                    <option value="lab back" ${patient.labStatusOffboarding === "lab back" ? "selected" : ""}>Lab Back</option>
-                    <option value="not needed" ${patient.labStatusOffboarding === "not needed" ? "selected" : ""}>Not Needed</option>
-                </select>
             </td>
             <td>
                 <span class="notes-display" onclick="openNotesPopup(${index})">${patient.notes.length > 10 ? patient.notes.slice(0, 10) + '...' : patient.notes || 'Not Set'}</span>
@@ -142,22 +126,22 @@ function applyLabStatusColors(row, patient) {
     if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)) {
         row.cells[2].classList.add('red');
     } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)) {
-        row.cells[2].classList.add('red');
+        row.cells[2].classList.add('yellow'); // Yellow for 1 day before red
     } else if (patient.labStatusPrep === "lab back") {
         row.cells[2].classList.add('green');
     } else {
-        row.cells[2].classList.remove('red', 'green');
+        row.cells[2].classList.remove('red', 'yellow', 'green');
     }
 
     // FTP Lab Status
     if (patient.labStatusFtp === "awaiting lab" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
         row.cells[4].classList.add('red');
     } else if (patient.labStatusFtp === "lab followed up" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('ftpLabBackWarning').value)) {
-        row.cells[4].classList.add('red');
+        row.cells[4].classList.add('yellow'); // Yellow for 1 day before red
     } else if (patient.labStatusFtp === "lab back") {
         row.cells[4].classList.add('green');
     } else {
-        row.cells[4].classList.remove('red', 'green');
+        row.cells[4].classList.remove('red', 'yellow', 'green');
     }
 
     // Insert Lab Status
@@ -205,12 +189,12 @@ discardNotesBtn.addEventListener('click', function () {
     notesPopup.style.display = 'none'; // Close the popup
 });
 
-// Open settings popup
-settingsBtn.addEventListener('click', function () {
-    settingsPopup.style.display = 'flex'; // Show the settings popup
-});
-
-// Close settings popup
-closeSettingsBtn.addEventListener('click', function () {
-    settingsPopup.style.display = 'none'; // Hide the settings popup
-});
+// Delete patient with confirmation
+function deletePatient(index) {
+    if (confirm('Are you sure you want to delete this patient?')) {
+        const patients = JSON.parse(localStorage.getItem('patients'));
+        patients.splice(index, 1);
+        localStorage.setItem('patients', JSON.stringify(patients));
+        loadPatients(); // Reload patients after deletion
+    }
+}
