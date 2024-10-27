@@ -3,64 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Progress Tracker</title>
+    <title>Patient Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Patient Tracker</h1>
+        <form id="patientForm">
+            <input type="text" id="patientName" placeholder="Patient Name" required>
+            <input type="text" id="case" placeholder="Case" required>
+            <textarea id="notes" placeholder="Notes" required></textarea>
+            <button type="submit">Add Patient</button>
+        </form>
 
-<h1>Patient Progress Tracker</h1>
+        <table id="patientTable">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Case</th>
+                    <th>Prep Date</th>
+                    <th>Lab Status (Prep)</th>
+                    <th>FTP Date</th>
+                    <th>Lab Status (FTP)</th>
+                    <th>Insert Date</th>
+                    <th>Lab Status (Insert)</th>
+                    <th>Offboarding Date</th>
+                    <th>Lab Status (Offboarding)</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="patientTableBody"></tbody>
+        </table>
 
-<button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+        <div id="notesPopup" class="popup">
+            <div class="popup-content">
+                <h2>Edit Notes</h2>
+                <textarea id="editNotesText" rows="4" cols="50"></textarea>
+                <button id="saveNotesBtn">Save</button>
+                <button id="discardNotesBtn">Discard</button>
+            </div>
+        </div>
 
-<form id="patientForm">
-    <input type="text" id="patientName" placeholder="Patient Name" required>
-    <input type="text" id="case" placeholder="Case" required>
-    <textarea id="notes" placeholder="Notes" rows="3" required></textarea>
-    <button type="submit">Add Patient</button>
-</form>
+        <div id="settingsPopup" class="popup">
+            <div class="popup-content">
+                <h2>Settings</h2>
+                <p>Prep Lab Follow Up Warning: 4 days</p>
+                <p>Prep Lab Back Warning: 2 days</p>
+                <p>Insert Lab Follow Up Warning: 7 days</p>
+                <p>Insert Lab Back Warning: 2 days</p>
+                <p>Offboarding Lab Follow Up Warning: 4 days</p>
+                <p>Offboarding Lab Back Warning: 2 days</p>
+                <button id="closeSettingsBtn">Close</button>
+            </div>
+        </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Patient Name</th>
-            <th>Case</th>
-            <th>Prep Date</th>
-            <th>Lab Status</th>
-            <th>FTP Date</th>
-            <th>Lab Status</th>
-            <th>Insert Date</th>
-            <th>Lab Status</th>
-            <th>Offboarding Date</th>
-            <th>Lab Status</th>
-            <th>Notes</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="patientTableBody"></tbody>
-</table>
-
-<div id="notesPopup" class="popup">
-    <div class="popup-content">
-        <h2>Edit Notes</h2>
-        <textarea id="editNotesText" rows="5"></textarea>
-        <button id="saveNotesBtn">Save</button>
-        <button id="discardNotesBtn">Discard</button>
+        <button id="settingsBtn">Settings</button>
     </div>
-</div>
 
-<div id="settingsPopup" class="popup">
-    <div class="popup-content">
-        <h2>Settings</h2>
-        <p>Prep Lab Follow Up Warning: <span id="prepWarningFollowUp">4 days</span></p>
-        <p>Prep Lab Back Warning: <span id="prepWarningBack">2 days</span></p>
-        <p>Insert Lab Follow Up Warning: <span id="insertWarningFollowUp">7 days</span></p>
-        <p>Insert Lab Back Warning: <span id="insertWarningBack">2 days</span></p>
-        <p>Offboarding Lab Follow Up Warning: <span id="offboardingWarningFollowUp">4 days</span></p>
-        <p>Offboarding Lab Back Warning: <span id="offboardingWarningBack">2 days</span></p>
-        <button id="closeSettingsBtn">Close</button>
-    </div>
-</div>
-
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
