@@ -39,6 +39,7 @@ patientForm.addEventListener('submit', function (e) {
 // Function to load patients from local storage
 function loadPatients() {
   let patients = JSON.parse(localStorage.getItem('patients')) || [];
+  patientTableBody.innerHTML = ''; // Clear table before loading
   patients.forEach(addPatientToTable);
 }
 
@@ -117,19 +118,26 @@ function deletePatient(index, btn) {
 
 // Function to open a date picker
 function openCalendar(column, index) {
+  // Create a date input element
   const dateInput = document.createElement('input');
   dateInput.type = 'date';
-  dateInput.style.display = 'none'; // Hide the date input
-  document.body.appendChild(dateInput); // Add to the document to open it
-  dateInput.click(); // Trigger click to open date picker
+  dateInput.style.position = 'absolute';
+  dateInput.style.visibility = 'hidden'; // Keep it hidden, we only want the calendar UI
+
+  document.body.appendChild(dateInput);
+  dateInput.focus(); // Open the date picker
 
   // Set the value when a date is selected
-  dateInput.onchange = function () {
+  dateInput.addEventListener('change', function () {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    const patient = patients[index];
-    patient[column] = dateInput.value; // Update the relevant date
-    localStorage.setItem('patients', JSON.stringify(patients)); // Save back to local storage
+    patients[index][column] = dateInput.value; // Update the date in the correct column
+    localStorage.setItem('patients', JSON.stringify(patients)); // Save the updated data
     loadPatients(); // Refresh the table
-    document.body.removeChild(dateInput); // Remove the hidden input
-  };
+    document.body.removeChild(dateInput); // Remove the hidden date input after use
+  });
+
+  // Clean up the input if user clicks away without choosing a date
+  dateInput.addEventListener('blur', function () {
+    document.body.removeChild(dateInput);
+  });
 }
