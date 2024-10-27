@@ -74,8 +74,14 @@ function loadPatients() {
 }
 
 function addPatient() {
-    const name = document.getElementById('patientName').value;
-    const notes = document.getElementById('notes').value;
+    const name = document.getElementById('patientName').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+
+    if (name === "") {
+        alert("Patient name is required.");
+        return;
+    }
+
     const patients = JSON.parse(localStorage.getItem('patients')) || [];
     const newPatient = {
         name,
@@ -88,9 +94,12 @@ function addPatient() {
         labStatusOffboarding: 'awaiting lab',
         notes
     };
+
     patients.push(newPatient);
     localStorage.setItem('patients', JSON.stringify(patients));
     loadPatients();
+
+    // Clear input fields
     document.getElementById('patientName').value = '';
     document.getElementById('notes').value = '';
 }
@@ -121,50 +130,28 @@ function updateLabStatus(select, index) {
 function applyLabStatusColors(row, patient) {
     const today = new Date();
 
-    // Prep Lab Status
-    if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)) {
-        row.cells[2].classList.add('red');
-    } else if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)+1) {
-        row.cells[2].classList.add('yellow');    
-    } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)) {
-        row.cells[2].classList.add('red');
-    } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)+1) {
-        row.cells[2].classList.add('yellow');
-    } else if (patient.labStatusPrep === "lab back") {
-        row.cells[2].classList.add('green');
-    } else {
-        row.cells[2].classList.remove('red', 'yellow', 'green');
+    // Helper function to apply color
+    function setRowColor(cell, condition, color) {
+        if (condition) {
+            cell.classList.add(color);
+        } else {
+            cell.classList.remove('red', 'yellow', 'green'); // Remove all colors
+        }
     }
+
+    // Prep Lab Status
+    setRowColor(row.cells[2], patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value), 'red');
+    setRowColor(row.cells[2], patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value) + 1, 'yellow');
+    setRowColor(row.cells[2], patient.labStatusPrep === "lab back", 'green');
 
     // Insert Lab Status
-    if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
-        row.cells[6].classList.add('red');
-    } else if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)+1) {
-        row.cells[6].classList.add('red');
-    } else if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabBackUpWarning').value)) {
-        row.cells[6].classList.add('red');
-    } else if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabBackUpWarning').value)+1) {
-        row.cells[6].classList.add('yellow');
-    } else if (patient.labStatusInsert === "lab back") {
-        row.cells[6].classList.add('green');
-    } else {
-        row.cells[6].classList.remove('red', 'green');
-    }
+    setRowColor(row.cells[6], patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value), 'red');
+    setRowColor(row.cells[6], patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabBackWarning').value), 'red');
+    setRowColor(row.cells[6], patient.labStatusInsert === "lab back", 'green');
 
     // Offboarding Lab Status
-    if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabFollowUpWarning').value)) {
-        row.cells[8].classList.add('red');
-    }else if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabFollowUpWarning').value)+1) {
-        row.cells[8].classList.add('yellow');
-    }else if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabBackWarning').value)) {
-        row.cells[8].classList.add('red');
-    }else if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabBackWarning').value)+1) {
-        row.cells[8].classList.add('yellow');
-    } else if (patient.labStatusOffboarding === "lab back") {
-        row.cells[8].classList.add('green');
-    } else {
-        row.cells[8].classList.remove('red', 'green');
-    }
+    setRowColor(row.cells[8], patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabFollowUpWarning').value), 'red');
+    setRowColor(row.cells[8], patient.labStatusOffboarding === "lab back", 'green');
 }
 
 function daysBetween(date1, date2) {
@@ -172,33 +159,32 @@ function daysBetween(date1, date2) {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
 }
 
+function deletePatient(index) {
+    const patients = JSON.parse(localStorage.getItem('patients'));
+    patients.splice(index, 1);
+    localStorage.setItem('patients', JSON.stringify(patients));
+    loadPatients(); // Reload patients to reflect changes
+}
+
 function openNotesPopup(index) {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    currentEditIndex = index; // Store index for editing
-    editNotesText.value = patients[index].notes; // Load current notes into the textarea
-    notesPopup.style.display = 'flex'; // Show the popup
+    currentEditIndex = index;
+    editNotesText.value = patients[index].notes;
+    notesPopup.style.display = 'block';
 }
 
-// Save edited notes
-saveNotesBtn.addEventListener('click', function () {
+saveNotesBtn.addEventListener('click', () => {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    patients[currentEditIndex].notes = editNotesText.value; // Update notes
-    localStorage.setItem('patients', JSON.stringify(patients)); // Save changes
-    loadPatients(); // Reload patients to reflect changes
-    notesPopup.style.display = 'none'; // Close the popup
+    patients[currentEditIndex].notes = editNotesText.value;
+    localStorage.setItem('patients', JSON.stringify(patients));
+    loadPatients();
+    notesPopup.style.display = 'none';
 });
 
-// Discard edited notes
-discardNotesBtn.addEventListener('click', function () {
-    notesPopup.style.display = 'none'; // Close the popup
+discardNotesBtn.addEventListener('click', () => {
+    notesPopup.style.display = 'none';
 });
 
-// Delete patient with confirmation
-function deletePatient(index) {
-    if (confirm('Are you sure you want to delete this patient?')) {
-        const patients = JSON.parse(localStorage.getItem('patients'));
-        patients.splice(index, 1);
-        localStorage.setItem('patients', JSON.stringify(patients));
-        loadPatients(); // Reload patients after deletion
-    }
-}
+settingsBtn.addEventListener('click', () => {
+    settingsPopup.style.display = 'block';
+});
