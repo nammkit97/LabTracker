@@ -1,10 +1,13 @@
-// Get references to the form and table body
+// Get references to the form, table body, and popups
 const patientForm = document.getElementById('patientForm');
 const patientTableBody = document.getElementById('patientTableBody');
 const notesPopup = document.getElementById('notesPopup');
 const editNotesText = document.getElementById('editNotesText');
 const saveNotesBtn = document.getElementById('saveNotesBtn');
 const discardNotesBtn = document.getElementById('discardNotesBtn');
+const settingsPopup = document.getElementById('settingsPopup');
+const settingsBtn = document.getElementById('settingsBtn');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
 let currentEditIndex = null;
 
 // Load patients from local storage on page load
@@ -72,6 +75,14 @@ function addPatientToTable(patient, index = null) {
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
         </td>
         <td>
+            <select class="lab-status-dropdown" data-column="labStatusFtp">
+                <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
+                <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
+                <option value="lab back" ${patient.labStatusFtp === "lab back" ? "selected" : ""}>Lab Back</option>
+                <option value="not needed" ${patient.labStatusFtp === "not needed" ? "selected" : ""}>Not Needed</option>
+            </select>
+        </td>
+        <td>
             <span class="date-display" data-column="insertDate">${patient.insertDate || 'Not Set'}</span>
             <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'insertDate')">
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
@@ -98,48 +109,105 @@ function addPatientToTable(patient, index = null) {
             </select>
         </td>
         <td>
-            <span class="note-display" onclick="openNotesPopup(${index})">
+            <span class="notes-display" onclick="openNotesPopup(${index})">
                 ${patient.notes.length > 10 ? patient.notes.substring(0, 10) + '...' : patient.notes}
             </span>
         </td>
         <td class="actions">
-            <button onclick="confirmDelete(${index}, this)">Delete</button>
+            <button type="button" onclick="confirmDelete(${index}, this)">Delete</button>
         </td>
     `;
+    
     patientTableBody.appendChild(row);
+    
+    // Check warnings
+    checkWarnings(patient, index);
 }
 
-// Function to confirm deletion of a patient
-function confirmDelete(index, btn) {
-    const confirmation = confirm("Are you sure you want to delete this patient?");
-    if (confirmation) {
-        deletePatient(index, btn);
+// Function to check warnings based on dates
+function checkWarnings(patient, index) {
+    const today = new Date();
+    
+    // Check Prep Lab Follow Up Warning
+    if (patient.labStatusPrep === 'lab followed up' && patient.prepDate) {
+        const prepDate = new Date(patient.prepDate);
+        const daysDiff = Math.floor((today - prepDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 4) {
+            alert("Warning: Prep Lab Follow Up is overdue by " + daysDiff + " days.");
+        }
+    }
+
+    // Check Prep Lab Back Warning
+    if (patient.labStatusPrep === 'lab back' && patient.ftpDate) {
+        const ftpDate = new Date(patient.ftpDate);
+        const daysDiff = Math.floor((today - ftpDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 2) {
+            alert("Warning: Prep Lab Back is overdue by " + daysDiff + " days.");
+        }
+    }
+
+    // Check Insert Lab Follow Up Warning
+    if (patient.labStatusInsert === 'lab followed up' && patient.insertDate) {
+        const insertDate = new Date(patient.insertDate);
+        const daysDiff = Math.floor((today - insertDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 7) {
+            alert("Warning: Insert Lab Follow Up is overdue by " + daysDiff + " days.");
+        }
+    }
+
+    // Check Insert Lab Back Warning
+    if (patient.labStatusInsert === 'lab back' && patient.insertDate) {
+        const insertDate = new Date(patient.insertDate);
+        const daysDiff = Math.floor((today - insertDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 2) {
+            alert("Warning: Insert Lab Back is overdue by " + daysDiff + " days.");
+        }
+    }
+
+    // Check Offboarding Lab Follow Up Warning
+    if (patient.labStatusOffboarding === 'lab followed up' && patient.offboarding) {
+        const offboardingDate = new Date(patient.offboarding);
+        const daysDiff = Math.floor((today - offboardingDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 4) {
+            alert("Warning: Offboarding Lab Follow Up is overdue by " + daysDiff + " days.");
+        }
+    }
+
+    // Check Offboarding Lab Back Warning
+    if (patient.labStatusOffboarding === 'lab back' && patient.offboarding) {
+        const offboardingDate = new Date(patient.offboarding);
+        const daysDiff = Math.floor((today - offboardingDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 2) {
+            alert("Warning: Offboarding Lab Back is overdue by " + daysDiff + " days.");
+        }
     }
 }
 
-// Function to delete a patient
-function deletePatient(index) {
-    const patients = JSON.parse(localStorage.getItem('patients'));
-    patients.splice(index, 1); // Remove patient from array
-    localStorage.setItem('patients', JSON.stringify(patients)); // Update local storage
-    loadPatients(); // Reload patients to reflect changes
-}
-
-// Function to toggle date input
-function toggleDateInput(button) {
-    const input = button.previousElementSibling;
-    input.style.display = (input.style.display === 'none') ? 'inline-block' : 'none';
-}
-
-// Function to update date and save to local storage
+// Function to update date
 function updateDate(input, index, column) {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    patients[index][column] = input.value; // Update the corresponding date
-    localStorage.setItem('patients', JSON.stringify(patients)); // Save changes to local storage
+    patients[index][column] = input.value; // Update the appropriate column
+    localStorage.setItem('patients', JSON.stringify(patients)); // Save changes
     loadPatients(); // Reload patients to reflect changes
 }
 
-// Function to open the notes popup
+// Toggle the visibility of date input
+function toggleDateInput(button) {
+    const dateInput = button.previousElementSibling;
+    dateInput.style.display = dateInput.style.display === 'none' ? 'inline-block' : 'none';
+}
+
+// Function to confirm deletion
+function confirmDelete(index, button) {
+    if (confirm("Are you sure you want to delete this patient?")) {
+        const patients = JSON.parse(localStorage.getItem('patients'));
+        patients.splice(index, 1); // Remove patient from array
+        localStorage.setItem('patients', JSON.stringify(patients)); // Save changes
+        loadPatients(); // Reload patients to reflect changes
+    }
+}
+
+// Function to open notes popup
 function openNotesPopup(index) {
     const patients = JSON.parse(localStorage.getItem('patients'));
     currentEditIndex = index; // Store the index for editing
@@ -159,4 +227,14 @@ saveNotesBtn.addEventListener('click', function() {
 // Function to discard changes and close the popup
 discardNotesBtn.addEventListener('click', function() {
     notesPopup.style.display = 'none'; // Just close the popup
+});
+
+// Open settings popup
+settingsBtn.addEventListener('click', function() {
+    settingsPopup.style.display = 'block'; // Show the settings popup
+});
+
+// Close settings popup
+closeSettingsBtn.addEventListener('click', function() {
+    settingsPopup.style.display = 'none'; // Close the settings popup
 });
