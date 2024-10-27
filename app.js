@@ -82,6 +82,7 @@ function addPatient() {
         prepDate: '',
         labStatusPrep: 'awaiting lab',
         ftpDate: '',
+        labStatusFtp: 'awaiting lab',
         insertDate: '',
         labStatusInsert: 'awaiting lab',
         offboardingDate: '',
@@ -121,86 +122,83 @@ function updateLabStatus(select, index) {
 function applyLabStatusColors(row, patient) {
     const today = new Date();
 
-    // Helper function to apply color
-    function setRowColor(cell, condition, color) {
-        if (condition) {
-            cell.classList.add(color);
-        } else {
-            cell.classList.remove('red', 'yellow', 'green'); // Remove all colors
-        }
+    // Prep Lab Status
+    if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)) {
+        row.cells[2].classList.add('red');
+    } else if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)+1) {
+        row.cells[2].classList.add('yellow');    
+    } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)) {
+        row.cells[2].classList.add('red');
+    } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)+1) {
+        row.cells[2].classList.add('yellow');
+    } else if (patient.labStatusPrep === "lab back") {
+        row.cells[2].classList.add('green');
+    } else {
+        row.cells[2].classList.remove('red', 'yellow', 'green');
     }
 
-    // Prep Lab Status
-    const prepDate = new Date(patient.prepDate);
-    const prepStatusCell = row.cells[2]; // Adjust the index as needed
-
-    if (isNaN(prepDate)) {
-        console.log(`Invalid prepDate for patient ${patient.name}:`, patient.prepDate);
-        setRowColor(prepStatusCell, false, ''); // Ensure no color is applied for invalid date
+    // FTP Lab Status
+    if (patient.labStatusFtp === "awaiting lab" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
+        row.cells[4].classList.add('red');
+    } else if (patient.labStatusFtp === "lab followed up" && daysBetween(today, new Date(patient.ftpDate)) < parseInt(document.getElementById('ftpLabBackWarning').value)) {
+        row.cells[4].classList.add('yellow'); // Yellow for 1 day before red
+    } else if (patient.labStatusFtp === "lab back") {
+        row.cells[4].classList.add('green');
     } else {
-        const daysSincePrep = daysBetween(prepDate, today);
-        setRowColor(prepStatusCell, patient.labStatusPrep === "awaiting lab" && daysSincePrep < parseInt(document.getElementById('prepLabFollowUpWarning').value), 'red');
-        setRowColor(prepStatusCell, patient.labStatusPrep === "awaiting lab" && daysSincePrep < parseInt(document.getElementById('prepLabFollowUpWarning').value) + 1, 'yellow');
-        setRowColor(prepStatusCell, patient.labStatusPrep === "lab back", 'green');
+        row.cells[4].classList.remove('red', 'yellow', 'green');
     }
 
     // Insert Lab Status
-    const insertDate = new Date(patient.insertDate);
-    const insertStatusCell = row.cells[6]; // Adjust the index as needed
-
-    if (isNaN(insertDate)) {
-        console.log(`Invalid insertDate for patient ${patient.name}:`, patient.insertDate);
-        setRowColor(insertStatusCell, false, ''); // Ensure no color is applied for invalid date
+    if (patient.labStatusInsert === "awaiting lab" && daysBetween(today, new Date(patient.insertDate)) < parseInt(document.getElementById('insertLabFollowUpWarning').value)) {
+        row.cells[6].classList.add('red');
+    } else if (patient.labStatusInsert === "lab back") {
+        row.cells[6].classList.add('green');
     } else {
-        const daysSinceInsert = daysBetween(insertDate, today);
-        setRowColor(insertStatusCell, patient.labStatusInsert === "awaiting lab" && daysSinceInsert < parseInt(document.getElementById('insertLabFollowUpWarning').value), 'red');
-        setRowColor(insertStatusCell, patient.labStatusInsert === "awaiting lab" && daysSinceInsert < parseInt(document.getElementById('insertLabBackWarning').value), 'yellow');
-        setRowColor(insertStatusCell, patient.labStatusInsert === "lab back", 'green');
+        row.cells[6].classList.remove('red', 'green');
     }
 
     // Offboarding Lab Status
-    const offboardingDate = new Date(patient.offboardingDate);
-    const offboardingStatusCell = row.cells[8]; // Adjust the index as needed
-
-    if (isNaN(offboardingDate)) {
-        console.log(`Invalid offboardingDate for patient ${patient.name}:`, patient.offboardingDate);
-        setRowColor(offboardingStatusCell, false, ''); // Ensure no color is applied for invalid date
+    if (patient.labStatusOffboarding === "awaiting lab" && daysBetween(today, new Date(patient.offboardingDate)) < parseInt(document.getElementById('offboardingLabFollowUpWarning').value)) {
+        row.cells[8].classList.add('red');
+    } else if (patient.labStatusOffboarding === "lab back") {
+        row.cells[8].classList.add('green');
     } else {
-        const daysSinceOffboarding = daysBetween(offboardingDate, today);
-        setRowColor(offboardingStatusCell, patient.labStatusOffboarding === "awaiting lab" && daysSinceOffboarding < parseInt(document.getElementById('offboardingLabFollowUpWarning').value), 'red');
-        setRowColor(offboardingStatusCell, patient.labStatusOffboarding === "lab back", 'green');
+        row.cells[8].classList.remove('red', 'green');
     }
+}
+
+function daysBetween(date1, date2) {
+    const diffTime = Math.abs(date2 - date1);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
 }
 
 function openNotesPopup(index) {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    currentEditIndex = index;
-    editNotesText.value = patients[index].notes;
-    notesPopup.style.display = 'block';
+    currentEditIndex = index; // Store index for editing
+    editNotesText.value = patients[index].notes; // Load current notes into the textarea
+    notesPopup.style.display = 'flex'; // Show the popup
 }
 
-function closeNotesPopup() {
-    notesPopup.style.display = 'none';
-}
-
-saveNotesBtn.addEventListener('click', function() {
+// Save edited notes
+saveNotesBtn.addEventListener('click', function () {
     const patients = JSON.parse(localStorage.getItem('patients'));
-    patients[currentEditIndex].notes = editNotesText.value;
-    localStorage.setItem('patients', JSON.stringify(patients));
-    loadPatients();
-    closeNotesPopup();
+    patients[currentEditIndex].notes = editNotesText.value; // Update notes
+    localStorage.setItem('patients', JSON.stringify(patients)); // Save changes
+    loadPatients(); // Reload patients to reflect changes
+    notesPopup.style.display = 'none'; // Close the popup
 });
 
-discardNotesBtn.addEventListener('click', closeNotesPopup);
+// Discard edited notes
+discardNotesBtn.addEventListener('click', function () {
+    notesPopup.style.display = 'none'; // Close the popup
+});
 
+// Delete patient with confirmation
 function deletePatient(index) {
-    const patients = JSON.parse(localStorage.getItem('patients'));
-    patients.splice(index, 1);
-    localStorage.setItem('patients', JSON.stringify(patients));
-    loadPatients();
-}
-
-function daysBetween(date1, date2) {
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-    return Math.round((date2 - date1) / oneDay);
+    if (confirm('Are you sure you want to delete this patient?')) {
+        const patients = JSON.parse(localStorage.getItem('patients'));
+        patients.splice(index, 1);
+        localStorage.setItem('patients', JSON.stringify(patients));
+        loadPatients(); // Reload patients after deletion
+    }
 }
