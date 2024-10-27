@@ -72,14 +72,6 @@ function addPatientToTable(patient, index = null) {
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
         </td>
         <td>
-            <select class="lab-status-dropdown" data-column="labStatusFtp">
-                <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
-                <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
-                <option value="lab back" ${patient.labStatusFtp === "lab back" ? "selected" : ""}>Lab Back</option>
-                <option value="not needed" ${patient.labStatusFtp === "not needed" ? "selected" : ""}>Not Needed</option>
-            </select>
-        </td>
-        <td>
             <span class="date-display" data-column="insertDate">${patient.insertDate || 'Not Set'}</span>
             <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'insertDate')">
             <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
