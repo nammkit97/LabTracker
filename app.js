@@ -52,7 +52,8 @@ function addPatientToTable(patient, index = null) {
     <td>${patient.generalTx}</td>
     <td>
       <span class="date-display" data-column="prepDate">${patient.prepDate || 'Not Set'}</span>
-      <button type="button" class="calendar-btn" onclick="openCalendar('prepDate', ${index})">📅</button>
+      <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'prepDate')">
+      <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusPrep">
@@ -64,7 +65,8 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <span class="date-display" data-column="ftpDate">${patient.ftpDate || 'Not Set'}</span>
-      <button type="button" class="calendar-btn" onclick="openCalendar('ftpDate', ${index})">📅</button>
+      <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'ftpDate')">
+      <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusFtp">
@@ -76,7 +78,8 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <span class="date-display" data-column="insertDate">${patient.insertDate || 'Not Set'}</span>
-      <button type="button" class="calendar-btn" onclick="openCalendar('insertDate', ${index})">📅</button>
+      <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'insertDate')">
+      <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusInsert">
@@ -88,7 +91,8 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <span class="date-display" data-column="offboarding">${patient.offboarding || 'Not Set'}</span>
-      <button type="button" class="calendar-btn" onclick="openCalendar('offboarding', ${index})">📅</button>
+      <input type="date" class="calendar-input" style="display:none;" onchange="updateDate(this, ${index}, 'offboarding')">
+      <button type="button" class="calendar-btn" onclick="toggleDateInput(this)">📅</button>
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusOffboarding">
@@ -114,28 +118,16 @@ function deletePatient(index, btn) {
   btn.closest('tr').remove(); // Remove the row from the table
 }
 
-// Function to open a date picker
-function openCalendar(column, index) {
-  // Create a date input element
-  const dateInput = document.createElement('input');
-  dateInput.type = 'date';
-  dateInput.style.position = 'absolute';
-  dateInput.style.visibility = 'hidden'; // Keep it hidden, we only want the calendar UI
+// Function to toggle visibility of date input
+function toggleDateInput(btn) {
+  const dateInput = btn.previousElementSibling;
+  dateInput.style.display = dateInput.style.display === 'none' ? 'inline-block' : 'none';
+}
 
-  document.body.appendChild(dateInput);
-  dateInput.focus(); // Open the date picker
-
-  // Set the value when a date is selected
-  dateInput.addEventListener('change', function () {
-    const patients = JSON.parse(localStorage.getItem('patients'));
-    patients[index][column] = dateInput.value; // Update the date in the correct column
-    localStorage.setItem('patients', JSON.stringify(patients)); // Save the updated data
-    loadPatients(); // Refresh the table
-    document.body.removeChild(dateInput); // Remove the hidden date input after use
-  });
-
-  // Clean up the input if user clicks away without choosing a date
-  dateInput.addEventListener('blur', function () {
-    document.body.removeChild(dateInput);
-  });
+// Function to update date
+function updateDate(input, index, column) {
+  const patients = JSON.parse(localStorage.getItem('patients')) || [];
+  patients[index][column] = input.value;
+  localStorage.setItem('patients', JSON.stringify(patients));
+  loadPatients();
 }
