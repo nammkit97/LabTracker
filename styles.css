@@ -1,47 +1,43 @@
 body {
     font-family: Arial, sans-serif;
+    margin: 20px;
     background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    font-size: 14px; /* Smaller font size */
 }
 
 h1 {
     text-align: center;
 }
 
-.settings-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.settings-btn:hover {
-    background-color: #0056b3;
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 form {
-    margin-bottom: 20px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
-input[type="text"],
-textarea {
-    width: 100%;
+input, textarea, button {
+    margin: 10px 0;
     padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-textarea {
-    font-size: 16px; /* Bigger font size for notes input */
+button {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae4c;
 }
 
 table {
@@ -51,57 +47,48 @@ table {
 }
 
 th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #f8f8f8;
+    background-color: #f2f2f2;
 }
 
-.actions button {
-    background-color: #dc3545;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.actions button:hover {
-    background-color: #c82333;
-}
-
-.lab-status-dropdown {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-}
-
-.date-display {
-    margin-right: 5px;
-    display: inline-block;
+.calendar-btn {
+    margin-left: 10px;
 }
 
 .popup {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    position: fixed;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
 }
 
 .popup-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    background: white;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 10px;
+    width: 300px;
+}
+
+.notes-display {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.notes-display:hover {
+    text-decoration: none;
+}
+
+.calendar-input {
+    display: none; /* Initially hidden */
 }
