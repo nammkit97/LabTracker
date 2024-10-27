@@ -5,68 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Tracker</title>
     <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Patient Tracker</h1>
-        <div class="controls">
+
+        <div>
+            <h2>Add New Patient</h2>
             <input type="text" id="patientName" placeholder="Patient Name" required>
             <textarea id="notes" placeholder="Notes"></textarea>
             <button id="addPatient">Add Patient</button>
-            <button id="settingsBtn">Settings ⚙️</button>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Patient Name</th>
-                    <th>Prep Date</th>
-                    <th>Lab Status</th>
-                    <th>FTP Date</th>
-                    <th>Lab Status</th>
-                    <th>Insert Date</th>
-                    <th>Lab Status</th>
-                    <th>Offboarding Date</th>
-                    <th>Lab Status</th>
-                    <th>Notes</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="patientTableBody">
-                <!-- Patient rows will be populated here -->
-            </tbody>
-        </table>
-    </div>
 
-    <!-- Notes Popup -->
-    <div id="notesPopup" class="popup">
-        <div class="popup-content">
-            <h2>Edit Notes</h2>
-            <textarea id="editNotesText"></textarea>
-            <button id="saveNotesBtn">Save</button>
-            <button id="discardNotesBtn">Discard</button>
+        <div>
+            <h2>Patients List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Prep Date</th>
+                        <th>Lab Status (Prep)</th>
+                        <th>FTP Date</th>
+                        <th>Lab Status (FTP)</th>
+                        <th>Insert Date</th>
+                        <th>Lab Status (Insert)</th>
+                        <th>Offboarding Date</th>
+                        <th>Lab Status (Offboarding)</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="patientTableBody"></tbody>
+            </table>
         </div>
-    </div>
 
-    <!-- Settings Popup -->
-    <div id="settingsPopup" class="popup">
-        <div class="popup-content">
-            <h2>Settings</h2>
-            <label for="prepLabFollowUpWarning">Prep Lab Follow Up Warning (days):</label>
-            <input type="number" id="prepLabFollowUpWarning" value="4">
-            <label for="prepLabBackWarning">Prep Lab Back Warning (days):</label>
-            <input type="number" id="prepLabBackWarning" value="2">
-            <label for="insertLabFollowUpWarning">Insert Lab Follow Up Warning (days):</label>
-            <input type="number" id="insertLabFollowUpWarning" value="7">
-            <label for="insertLabBackWarning">Insert Lab Back Warning (days):</label>
-            <input type="number" id="insertLabBackWarning" value="2">
-            <label for="offboardingLabFollowUpWarning">Offboarding Lab Follow Up Warning (days):</label>
-            <input type="number" id="offboardingLabFollowUpWarning" value="4">
-            <label for="offboardingLabBackWarning">Offboarding Lab Back Warning (days):</label>
-            <input type="number" id="offboardingLabBackWarning" value="2">
-            <button id="closeSettingsBtn">Close</button>
+        <div id="notesPopup" class="popup">
+            <div class="popup-content">
+                <h2>Edit Notes</h2>
+                <textarea id="editNotesText" rows="4"></textarea>
+                <button id="saveNotesBtn">Save</button>
+                <button id="discardNotesBtn">Discard</button>
+            </div>
         </div>
-    </div>
 
-    <script src="app.js"></script>
+        <div id="settingsPopup" class="popup">
+            <div class="popup-content">
+                <h2>Settings</h2>
+                <label for="prepLabFollowUpWarning">Prep Lab Follow-Up Warning (days):</label>
+                <input type="number" id="prepLabFollowUpWarning" value="3">
+                <br>
+                <label for="insertLabFollowUpWarning">Insert Lab Follow-Up Warning (days):</label>
+                <input type="number" id="insertLabFollowUpWarning" value="3">
+                <br>
+                <label for="ftpLabBackWarning">FTP Lab Back Warning (days):</label>
+                <input type="number" id="ftpLabBackWarning" value="7">
+                <br>
+                <label for="offboardingLabFollowUpWarning">Offboarding Lab Follow-Up Warning (days):</label>
+                <input type="number" id="offboardingLabFollowUpWarning" value="7">
+                <br>
+                <button id="closeSettingsBtn">Close</button>
+            </div>
+        </div>
+
+        <button id="settingsBtn">Settings</button>
+    </div>
 </body>
 </html>
