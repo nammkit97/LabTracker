@@ -19,10 +19,10 @@ patientForm.addEventListener('submit', function (e) {
     ftpDate: '',
     insertDate: '',
     offboarding: '',
-    labStatusPrep: 'not needed',  // Default value
-    labStatusFtp: 'not needed',   // Default value
-    labStatusInsert: 'not needed', // Default value
-    labStatusOffboarding: 'not needed', // Default value
+    labStatusPrep: 'awaiting lab',  // Default value
+    labStatusFtp: 'awaiting lab',   // Default value
+    labStatusInsert: 'awaiting lab', // Default value
+    labStatusOffboarding: 'awaiting lab', // Default value
     notes: document.getElementById('notes').value
   };
 
@@ -57,9 +57,9 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusPrep">
+        <option value="awaiting lab" ${patient.labStatusPrep === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="lab followed up" ${patient.labStatusPrep === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
         <option value="lab back" ${patient.labStatusPrep === "lab back" ? "selected" : ""}>Lab Back</option>
-        <option value="awaiting lab" ${patient.labStatusPrep === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="not needed" ${patient.labStatusPrep === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
@@ -69,9 +69,9 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusFtp">
+        <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
         <option value="lab back" ${patient.labStatusFtp === "lab back" ? "selected" : ""}>Lab Back</option>
-        <option value="awaiting lab" ${patient.labStatusFtp === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="not needed" ${patient.labStatusFtp === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
@@ -81,9 +81,9 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusInsert">
+        <option value="awaiting lab" ${patient.labStatusInsert === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="lab followed up" ${patient.labStatusInsert === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
         <option value="lab back" ${patient.labStatusInsert === "lab back" ? "selected" : ""}>Lab Back</option>
-        <option value="awaiting lab" ${patient.labStatusInsert === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="not needed" ${patient.labStatusInsert === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
@@ -93,9 +93,9 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusOffboarding">
+        <option value="awaiting lab" ${patient.labStatusOffboarding === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="lab followed up" ${patient.labStatusOffboarding === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
         <option value="lab back" ${patient.labStatusOffboarding === "lab back" ? "selected" : ""}>Lab Back</option>
-        <option value="awaiting lab" ${patient.labStatusOffboarding === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="not needed" ${patient.labStatusOffboarding === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
