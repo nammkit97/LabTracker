@@ -8,32 +8,21 @@
 </head>
 <body>
   <h1>Patient Progress Tracker</h1>
+
   <form id="patientForm">
-    <label for="patientName">Patient Name:</label>
-    <input type="text" id="patientName" required>
-    
-    <label for="case">Case:</label>
-    <input type="text" id="case" required>
-
-    <label for="generalTx">General Tx:</label>
-    <input type="text" id="generalTx" required>
-
-    <label for="status">Status:</label>
-    <input type="text" id="status" required>
-
-    <label for="notes">Notes:</label>
-    <input type="text" id="notes" required>
-
+    <input type="text" id="patientName" placeholder="Patient Name" required>
+    <input type="text" id="case" placeholder="Case" required>
+    <input type="text" id="generalTx" placeholder="General Treatment" required>
+    <textarea id="notes" placeholder="Notes"></textarea>
     <button type="submit">Add Patient</button>
   </form>
 
-  <table id="patientTable">
+  <table>
     <thead>
       <tr>
         <th>Patient Name</th>
         <th>Case</th>
         <th>General Tx</th>
-        <th>Status</th>
         <th>Prep Date</th>
         <th>Lab Status (Prep)</th>
         <th>FTP Date</th>
@@ -46,9 +35,7 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody id="patientTableBody">
-      <!-- Patient rows will be inserted here by JavaScript -->
-    </tbody>
+    <tbody id="patientTableBody"></tbody>
   </table>
 
   <script src="app.js"></script>
