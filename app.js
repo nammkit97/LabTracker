@@ -83,4 +83,59 @@ function addPatientToTable(patient, index = null) {
         <option value="awaiting lab" ${patient.labStatusInsert === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
         <option value="lab followed up" ${patient.labStatusInsert === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
         <option value="lab back" ${patient.labStatusInsert === "lab back" ? "selected" : ""}>Lab Back</option>
-        <option value="not needed" ${patient.labStatusIn
+        <option value="not needed" ${patient.labStatusInsert === "not needed" ? "selected" : ""}>Not Needed</option>
+      </select>
+    </td>
+    <td>
+      <span class="date-display" data-column="offboarding">${patient.offboarding || 'Not Set'}</span>
+      <button type="button" class="calendar-btn" onclick="openCalendar('offboarding', ${index})">📅</button>
+    </td>
+    <td>
+      <select class="lab-status-dropdown" data-column="labStatusOffboarding">
+        <option value="awaiting lab" ${patient.labStatusOffboarding === "awaiting lab" ? "selected" : ""}>Awaiting Lab</option>
+        <option value="lab followed up" ${patient.labStatusOffboarding === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
+        <option value="lab back" ${patient.labStatusOffboarding === "lab back" ? "selected" : ""}>Lab Back</option>
+        <option value="not needed" ${patient.labStatusOffboarding === "not needed" ? "selected" : ""}>Not Needed</option>
+      </select>
+    </td>
+    <td>${patient.notes}</td>
+    <td class="actions">
+      <button onclick="deletePatient(${index}, this)">Delete</button>
+    </td>
+  `;
+  patientTableBody.appendChild(row);
+}
+
+// Function to delete a patient
+function deletePatient(index, btn) {
+  let patients = JSON.parse(localStorage.getItem('patients')) || [];
+  patients.splice(index, 1);
+  localStorage.setItem('patients', JSON.stringify(patients));
+  btn.closest('tr').remove(); // Remove the row from the table
+}
+
+// Function to open a date picker
+function openCalendar(column, index) {
+  // Create a date input element
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+  dateInput.style.position = 'absolute';
+  dateInput.style.visibility = 'hidden'; // Keep it hidden, we only want the calendar UI
+
+  document.body.appendChild(dateInput);
+  dateInput.focus(); // Open the date picker
+
+  // Set the value when a date is selected
+  dateInput.addEventListener('change', function () {
+    const patients = JSON.parse(localStorage.getItem('patients'));
+    patients[index][column] = dateInput.value; // Update the date in the correct column
+    localStorage.setItem('patients', JSON.stringify(patients)); // Save the updated data
+    loadPatients(); // Refresh the table
+    document.body.removeChild(dateInput); // Remove the hidden date input after use
+  });
+
+  // Clean up the input if user clicks away without choosing a date
+  dateInput.addEventListener('blur', function () {
+    document.body.removeChild(dateInput);
+  });
+}
