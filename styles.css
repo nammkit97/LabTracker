@@ -10,6 +10,22 @@ h1 {
     text-align: center;
 }
 
+.settings-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.settings-btn:hover {
+    background-color: #0056b3;
+}
+
 form {
     margin-bottom: 20px;
     text-align: center;
