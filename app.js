@@ -181,6 +181,55 @@ function checkWarnings(patient, index) {
             alert("Warning: Offboarding Lab Back is overdue by " + daysDiff + " days.");
         }
     }
+
+    // Check for "awaiting lab" status and apply red color if applicable
+    const prepDate = new Date(patient.prepDate);
+    const ftpDate = new Date(patient.ftpDate);
+    const insertDate = new Date(patient.insertDate);
+    const offboardingDate = new Date(patient.offboarding);
+
+    if (patient.labStatusPrep === 'awaiting lab' && patient.prepDate) {
+        const daysDiff = Math.floor((today - prepDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff < 4) {
+            highlightCell(index, 'labStatusPrep');
+        }
+    }
+
+    if (patient.labStatusFtp === 'awaiting lab' && patient.ftpDate) {
+        const daysDiff = Math.floor((today - ftpDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff < 2) {
+            highlightCell(index, 'labStatusFtp');
+        }
+    }
+
+    if (patient.labStatusInsert === 'awaiting lab' && patient.insertDate) {
+        const daysDiff = Math.floor((today - insertDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff < 2) {
+            highlightCell(index, 'labStatusInsert');
+        }
+    }
+
+    if (patient.labStatusOffboarding === 'awaiting lab' && patient.offboarding) {
+        const daysDiff = Math.floor((today - offboardingDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff < 2) {
+            highlightCell(index, 'labStatusOffboarding');
+        }
+    }
+}
+
+// Function to highlight cell in red
+function highlightCell(index, column) {
+    const row = patientTableBody.children[index];
+    const columnIndex = {
+        labStatusPrep: 3,
+        labStatusFtp: 5,
+        labStatusInsert: 7,
+        labStatusOffboarding: 9
+    }[column];
+
+    if (row) {
+        row.cells[columnIndex].style.backgroundColor = 'red'; // Change background color to red
+    }
 }
 
 // Function to update date
