@@ -23,15 +23,19 @@
 
     <label for="prepDate">Prep Date:</label>
     <input type="date" id="prepDate" required>
+    <button type="button" class="calendar-btn" onclick="openCalendar('prepDate')">📅</button>
 
     <label for="ftpDate">FTP Date:</label>
     <input type="date" id="ftpDate" required>
+    <button type="button" class="calendar-btn" onclick="openCalendar('ftpDate')">📅</button>
 
     <label for="insertDate">Insert Date:</label>
     <input type="date" id="insertDate" required>
+    <button type="button" class="calendar-btn" onclick="openCalendar('insertDate')">📅</button>
 
     <label for="offboarding">Offboarding Date:</label>
     <input type="date" id="offboarding" required>
+    <button type="button" class="calendar-btn" onclick="openCalendar('offboarding')">📅</button>
 
     <label for="notes">Notes:</label>
     <input type="text" id="notes" required>
@@ -47,10 +51,13 @@
         <th>General Tx</th>
         <th>Status</th>
         <th>Prep Date</th>
+        <th>Lab Status (Prep)</th>
         <th>FTP Date</th>
+        <th>Lab Status (FTP)</th>
         <th>Insert Date</th>
-        <th>Offboarding</th>
-        <th>Lab Status</th>
+        <th>Lab Status (Insert)</th>
+        <th>Offboarding Date</th>
+        <th>Lab Status (Offboarding)</th>
         <th>Notes</th>
         <th>Actions</th>
       </tr>
