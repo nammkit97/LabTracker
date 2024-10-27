@@ -125,8 +125,12 @@ function applyLabStatusColors(row, patient) {
     // Prep Lab Status
     if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)) {
         row.cells[2].classList.add('red');
+    } else if (patient.labStatusPrep === "awaiting lab" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabFollowUpWarning').value)+1) {
+        row.cells[2].classList.add('yellow');    
     } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)) {
-        row.cells[2].classList.add('yellow'); // Yellow for 1 day before red
+        row.cells[2].classList.add('red');
+    } else if (patient.labStatusPrep === "lab followed up" && daysBetween(today, new Date(patient.prepDate)) < parseInt(document.getElementById('prepLabBackWarning').value)+1) {
+        row.cells[2].classList.add('yellow');
     } else if (patient.labStatusPrep === "lab back") {
         row.cells[2].classList.add('green');
     } else {
