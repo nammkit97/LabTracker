@@ -9,56 +9,62 @@
 <body>
     <div class="container">
         <h1>Patient Tracker</h1>
-        <form id="patientForm">
+        <div class="controls">
             <input type="text" id="patientName" placeholder="Patient Name" required>
-            <input type="text" id="case" placeholder="Case" required>
-            <textarea id="notes" placeholder="Notes" required></textarea>
-            <button type="submit">Add Patient</button>
-        </form>
-
-        <table id="patientTable">
+            <textarea id="notes" placeholder="Notes"></textarea>
+            <button id="addPatient">Add Patient</button>
+            <button id="settingsBtn">Settings ⚙️</button>
+        </div>
+        <table>
             <thead>
                 <tr>
                     <th>Patient Name</th>
-                    <th>Case</th>
                     <th>Prep Date</th>
-                    <th>Lab Status (Prep)</th>
+                    <th>Lab Status</th>
                     <th>FTP Date</th>
-                    <th>Lab Status (FTP)</th>
+                    <th>Lab Status</th>
                     <th>Insert Date</th>
-                    <th>Lab Status (Insert)</th>
+                    <th>Lab Status</th>
                     <th>Offboarding Date</th>
-                    <th>Lab Status (Offboarding)</th>
+                    <th>Lab Status</th>
                     <th>Notes</th>
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="patientTableBody"></tbody>
+            <tbody id="patientTableBody">
+                <!-- Patient rows will be populated here -->
+            </tbody>
         </table>
+    </div>
 
-        <div id="notesPopup" class="popup">
-            <div class="popup-content">
-                <h2>Edit Notes</h2>
-                <textarea id="editNotesText" rows="4" cols="50"></textarea>
-                <button id="saveNotesBtn">Save</button>
-                <button id="discardNotesBtn">Discard</button>
-            </div>
+    <!-- Notes Popup -->
+    <div id="notesPopup" class="popup">
+        <div class="popup-content">
+            <h2>Edit Notes</h2>
+            <textarea id="editNotesText"></textarea>
+            <button id="saveNotesBtn">Save</button>
+            <button id="discardNotesBtn">Discard</button>
         </div>
+    </div>
 
-        <div id="settingsPopup" class="popup">
-            <div class="popup-content">
-                <h2>Settings</h2>
-                <p>Prep Lab Follow Up Warning: 4 days</p>
-                <p>Prep Lab Back Warning: 2 days</p>
-                <p>Insert Lab Follow Up Warning: 7 days</p>
-                <p>Insert Lab Back Warning: 2 days</p>
-                <p>Offboarding Lab Follow Up Warning: 4 days</p>
-                <p>Offboarding Lab Back Warning: 2 days</p>
-                <button id="closeSettingsBtn">Close</button>
-            </div>
+    <!-- Settings Popup -->
+    <div id="settingsPopup" class="popup">
+        <div class="popup-content">
+            <h2>Settings</h2>
+            <label for="prepLabFollowUpWarning">Prep Lab Follow Up Warning (days):</label>
+            <input type="number" id="prepLabFollowUpWarning" value="4">
+            <label for="prepLabBackWarning">Prep Lab Back Warning (days):</label>
+            <input type="number" id="prepLabBackWarning" value="2">
+            <label for="insertLabFollowUpWarning">Insert Lab Follow Up Warning (days):</label>
+            <input type="number" id="insertLabFollowUpWarning" value="7">
+            <label for="insertLabBackWarning">Insert Lab Back Warning (days):</label>
+            <input type="number" id="insertLabBackWarning" value="2">
+            <label for="offboardingLabFollowUpWarning">Offboarding Lab Follow Up Warning (days):</label>
+            <input type="number" id="offboardingLabFollowUpWarning" value="4">
+            <label for="offboardingLabBackWarning">Offboarding Lab Back Warning (days):</label>
+            <input type="number" id="offboardingLabBackWarning" value="2">
+            <button id="closeSettingsBtn">Close</button>
         </div>
-
-        <button id="settingsBtn">Settings</button>
     </div>
 
     <script src="app.js"></script>
