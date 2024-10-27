@@ -15,10 +15,10 @@ patientForm.addEventListener('submit', function (e) {
     case: document.getElementById('case').value,
     generalTx: document.getElementById('generalTx').value,
     status: document.getElementById('status').value,
-    prepDate: document.getElementById('prepDate').value,
-    ftpDate: document.getElementById('ftpDate').value,
-    insertDate: document.getElementById('insertDate').value,
-    offboarding: document.getElementById('offboarding').value,
+    prepDate: '',
+    ftpDate: '',
+    insertDate: '',
+    offboarding: '',
     labStatusPrep: 'not needed',  // Default value
     labStatusFtp: 'not needed',   // Default value
     labStatusInsert: 'not needed', // Default value
@@ -51,7 +51,10 @@ function addPatientToTable(patient, index = null) {
     <td>${patient.case}</td>
     <td>${patient.generalTx}</td>
     <td>${patient.status}</td>
-    <td contenteditable="true" class="editable" data-column="prepDate">${patient.prepDate}</td>
+    <td>
+      <span class="date-display" data-column="prepDate">${patient.prepDate || 'Not Set'}</span>
+      <button type="button" class="calendar-btn" onclick="openCalendar('prepDate', ${index})">📅</button>
+    </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusPrep">
         <option value="lab followed up" ${patient.labStatusPrep === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
@@ -60,7 +63,10 @@ function addPatientToTable(patient, index = null) {
         <option value="not needed" ${patient.labStatusPrep === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
-    <td contenteditable="true" class="editable" data-column="ftpDate">${patient.ftpDate}</td>
+    <td>
+      <span class="date-display" data-column="ftpDate">${patient.ftpDate || 'Not Set'}</span>
+      <button type="button" class="calendar-btn" onclick="openCalendar('ftpDate', ${index})">📅</button>
+    </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusFtp">
         <option value="lab followed up" ${patient.labStatusFtp === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
@@ -69,7 +75,10 @@ function addPatientToTable(patient, index = null) {
         <option value="not needed" ${patient.labStatusFtp === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
-    <td contenteditable="true" class="editable" data-column="insertDate">${patient.insertDate}</td>
+    <td>
+      <span class="date-display" data-column="insertDate">${patient.insertDate || 'Not Set'}</span>
+      <button type="button" class="calendar-btn" onclick="openCalendar('insertDate', ${index})">📅</button>
+    </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusInsert">
         <option value="lab followed up" ${patient.labStatusInsert === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
@@ -78,7 +87,10 @@ function addPatientToTable(patient, index = null) {
         <option value="not needed" ${patient.labStatusInsert === "not needed" ? "selected" : ""}>Not Needed</option>
       </select>
     </td>
-    <td contenteditable="true" class="editable" data-column="offboarding">${patient.offboarding}</td>
+    <td>
+      <span class="date-display" data-column="offboarding">${patient.offboarding || 'Not Set'}</span>
+      <button type="button" class="calendar-btn" onclick="openCalendar('offboarding', ${index})">📅</button>
+    </td>
     <td>
       <select class="lab-status-dropdown" data-column="labStatusOffboarding">
         <option value="lab followed up" ${patient.labStatusOffboarding === "lab followed up" ? "selected" : ""}>Lab Followed Up</option>
@@ -89,7 +101,6 @@ function addPatientToTable(patient, index = null) {
     </td>
     <td>${patient.notes}</td>
     <td class="actions">
-      <button onclick="editPatient(${index})">Edit</button>
       <button onclick="deletePatient(${index}, this)">Delete</button>
     </td>
   `;
@@ -104,12 +115,21 @@ function deletePatient(index, btn) {
   btn.closest('tr').remove(); // Remove the row from the table
 }
 
-// Function to edit a patient (not yet implemented)
-function editPatient(index) {
-  alert('Edit function not yet implemented!');
-}
-
 // Function to open a date picker
-function openCalendar(inputId) {
-  document.getElementById(inputId).click();
+function openCalendar(column, index) {
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+  dateInput.style.display = 'none'; // Hide the date input
+  document.body.appendChild(dateInput); // Add to the document to open it
+  dateInput.click(); // Trigger click to open date picker
+
+  // Set the value when a date is selected
+  dateInput.onchange = function () {
+    const patients = JSON.parse(localStorage.getItem('patients'));
+    const patient = patients[index];
+    patient[column] = dateInput.value; // Update the relevant date
+    localStorage.setItem('patients', JSON.stringify(patients)); // Save back to local storage
+    loadPatients(); // Refresh the table
+    document.body.removeChild(dateInput); // Remove the hidden input
+  };
 }
